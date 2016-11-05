@@ -10,6 +10,9 @@ cache:
   - node_modules
   - dest
 
+before_install:
+  - npm install -g yarn --cache-min 999999999
+
 install:
   - yarn install
 
