@@ -1,0 +1,21 @@
+language: node_js
+
+node_js:
+  - 7
+
+sudo: required # Until Yarn repo is added to apt-source-whitelist
+
+cache:
+  directories:
+  - node_modules
+  - dest
+
+install:
+  - yarn install
+
+script:
+  - yarn run test:travis
+
+# Send coverage data to Coveralls
+after_script:
+  - "cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js"
