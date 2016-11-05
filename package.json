@@ -1,0 +1,45 @@
+{
+  "name": "kaspailer",
+  "version": "0.0.1",
+  "description": "Transforms angular.js code written in java script to ecma script 6 angular code",
+  "main": "dest/index.js",
+  "scripts": {
+    "clean": "rimraf dest coverage",
+    "build": "babel src --out-dir dest",
+    "lint": "eslint src test",
+    "test": "cross-env NODE_ENV=test mocha --compilers js:babel-core/register --recursive",
+    "test:watch": "cross-env NODE_ENV=test mocha --compilers js:babel-core/register --recursive --watch",
+    "test:cov": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --reporter dot test/",
+    "test:travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --reporter spec test/",
+    "prepublish": "npm run lint && npm run test && npm run clean && npm run build"
+  },
+  "files": [
+    "dest",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hdimitrieski/kaspailer.git"
+  },
+  "author": "Hristijan Dimitrieski",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hdimitrieski/kaspailer/issues"
+  },
+  "homepage": "https://github.com/hdimitrieski/kaspailer#readme",
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.0",
+    "babel-eslint": "^7.1.0",
+    "babel-preset-es2015": "^6.18.0",
+    "coveralls": "^2.11.14",
+    "cross-env": "^3.1.3",
+    "eslint": "^3.9.0",
+    "expect": "^1.20.2",
+    "jsdom": "^9.8.3",
+    "mocha": "^3.1.2",
+    "mocha-jsdom": "^1.1.0",
+    "rimraf": "^2.5.4",
+    "istanbul": "1.1.0-alpha.1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "only": ".js",
+  "presets": [
+    [
+      "es2015",
+      {
+        "loose": true
+      }
+    ]
+  ]
+}

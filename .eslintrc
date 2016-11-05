@@ -1,0 +1,71 @@
+{
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true,
+      "blockBindings": true,
+      // enable let and const (aka block bindings)
+      "defaultParams": true,
+      // enable default function parameters
+      "forOf": true,
+      // enable for-of loops
+      "templateStrings": true
+      // enable template strings
+    }
+  },
+  "env": {
+    "browser": true,
+    "mocha": true,
+    "node": true,
+    "es6": true
+  },
+  "globals": {
+  },
+  "rules": {
+    ////////// Possible Errors //////////
+
+    "no-console": 2,
+    // disallow use of console (off by default in the node environment)
+    "no-dupe-keys": 2,
+    // disallow duplicate keys when creating object literals
+    "no-empty": 2,
+    // disallow empty statements
+    "no-extra-boolean-cast": 2,
+    // disallow double-negation boolean casts in a boolean context
+    "no-extra-parens": 2,
+    // disallow unnecessary parentheses (off by default)
+    "no-extra-semi": 2,
+    // disallow unnecessary semicolons
+    "no-unreachable": 2,
+    // disallow unreachable statements after a return, throw, continue, or break statement
+
+    ////////// Variables //////////
+    "no-delete-var": 2,
+    // disallow deletion of variables
+    "no-shadow": 2,
+    // disallow declaration of variables already declared in the outer scope
+    "no-shadow-restricted-names": 2,
+    // disallow shadowing of names such as arguments
+    "no-undefined": 2,
+    // disallow use of undefined variable (off by default)
+    "no-unused-vars": 2,
+    // disallow declaration of variables that are not used in the code
+    "no-use-before-define": 2,
+    // disallow use of variables before they are defined
+
+
+    ////////// Node.js //////////
+    "handle-callback-err": 2,
+    // enforces error handling in callbacks (off by default) (on by default in the node environment)
+
+    ////////// Stylistic Issues //////////
+    "camelcase": 1,
+    // require camel case names
+    "new-cap": 2,
+    // require a capital letter for constructors
+
+    ////////// ECMAScript 6 //////////
+    "no-var": 2
+    // require let or const instead of var (off by default)
+  }
+}
