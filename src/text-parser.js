@@ -144,7 +144,6 @@ class TextParser {
   }
 
   replaceTemplateUrl(cmp) {
-    console.log(cmp);
     let template = 'template: ' + '\'' + cmp.templateUrl.url + '\'';
     this.parsedText += template;
     this.index += cmp.templateUrl.url.length + (cmp.templateUrl.index - cmp.templateUrlIndex) + 2;
