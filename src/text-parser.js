@@ -76,7 +76,10 @@ class TextParser {
     let functions = [];
 
     _.forEach(components, (cmp) => {
-      if (!cmp.hasFnReference && (ANGULAR_COMPONENT[cmp.type] || cmp.type === ANGULAR_CONFIGURATION.config)) {
+      if (!cmp.hasFnReference && ANGULAR_COMPONENT[cmp.type]) {
+        functions.push(cmp);
+      } else if (!cmp.hasFnReference && cmp.type === ANGULAR_CONFIGURATION.config) {
+        cmp.name = 'config';
         functions.push(cmp);
       }
     });
@@ -141,14 +144,14 @@ class TextParser {
   }
 
   replaceTemplateUrl(cmp) {
-    let template = 'template: ' + cmp.templateUrl.url;
+    console.log(cmp);
+    let template = 'template: ' + '\'' + cmp.templateUrl.url + '\'';
     this.parsedText += template;
-    this.index += template.length;
+    this.index += cmp.templateUrl.url.length + (cmp.templateUrl.index - cmp.templateUrlIndex) + 2;
   }
 
   addNgInject() {
     this.parsedText += '/*ngInject*/';
-    // this.index += 9;
   }
 }
 

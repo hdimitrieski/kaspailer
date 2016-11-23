@@ -111,7 +111,7 @@ describe('Parser', () => {
     let text = 'angular.module("my.module")' +
       '.directive("myDirective", function () {' +
       'return {' +
-        'template: "src/template.url",' +
+        'templateUrl: "src/template.url",' +
         'controller: function () {}' +
       '}' +
       '})';
@@ -123,30 +123,30 @@ describe('Parser', () => {
     expect(result).toBe(
       '/*@ngInject*/\n' +
       'function myDirective () {' +
-      'return {template: "src/template.url",controller: /*ngInject*/function () {}}' +
+      'return {template: \'src/template.url\',controller: /*ngInject*/function () {}}' +
       '}'
     );
   });
 
-  // it('should parse text 7', () => {
-  //   //given
-  //   let text = 'angular.module("my.module")' +
-  //     '.config(function () {' +
-  //       'stateProvider.state({' +
-  //         'template: "src/template.url",' +
-  //         'controller: function () {}' +
-  //       '});' +
-  //     '})';
-  //
-  //   //when
-  //   let result = parser.parse(text);
-  //
-  //   //then
-  //   expect(result).toBe(
-  //     '/*@ngInject*/\n' +
-  //     'function () {' +
-  //       ' stateProvider.state({template: "src/template.url",controller: /*ngInject*/function () {}});' +
-  //     '}'
-  //   );
-  // });
+  it('should parse text 7', () => {
+    //given
+    let text = 'angular.module("my.module")' +
+      '.config(function () {' +
+        'stateProvider.state({' +
+          'templateUrl:\'src/template.url\',' +
+          'controller: function () {}' +
+        '});' +
+      '})';
+  
+    //when
+    let result = parser.parse(text);
+  
+    //then
+    expect(result).toBe(
+      '/*@ngInject*/\n' +
+      'function config () {' +
+        'stateProvider.state({template: \'src/template.url\',controller: /*ngInject*/function () {}});' +
+      '}'
+    );
+  });
 });
