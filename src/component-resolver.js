@@ -15,10 +15,13 @@ class ComponentResolver {
    * Resolves all angular components and modules, java script functions and specials characters that should be removed.
    *
    * @param text JavaScript code
+   * @param filePath file path
    * @return {Object} resolved objects
    * */
-  resolve(text) {
+  resolve(text, filePath) {
+    //TODO file path
     this.tokens = lexer.lex(text);
+    this.filePath = filePath;
     this.functions = [];
     this.modules = [];
     this.components = {};
@@ -114,7 +117,8 @@ class ComponentResolver {
 
     let module = {
       start: start,
-      name: moduleNameToken.value
+      name: moduleNameToken.value,
+      path: this.filePath
     };
 
     if (this.expect(',')) {
@@ -170,7 +174,8 @@ class ComponentResolver {
       module: moduleName,
       type: cmpType,
       start: componentTypeToken.index,
-      name: cmpNameToken.string ? cmpNameToken.value : undefined
+      name: cmpNameToken.string ? cmpNameToken.value : undefined,//TODO resolve config/run name
+      path: this.filePath
     };
 
     let cmpDeclarationToken = cmpNameToken.string ? this.next() : cmpNameToken;

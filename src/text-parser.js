@@ -6,9 +6,10 @@ class TextParser {
     this.text = '';
     this.componentResolver = componentResolver;
   }
-
-  parse(txt) {
+//TODO sort by index and check for each cmp
+  parse(txt, filePath) {
     this.text = txt;
+    this.filePath = filePath;
     this.tokens = this.componentResolver.resolve(txt);
     this.parsedText = '';
     this.index = 0;
@@ -140,12 +141,11 @@ class TextParser {
   addFunctionName(cmp) {
     this.parsedText += '\n/*@ngInject*/\nfunction ' + cmp.name;
     this.index += 9;
-    // + 9 - "function" length + 1 increment the index
   }
 
   replaceTemplateUrl(cmp) {
-    let template = 'template: ' + '\'' + cmp.templateUrl.url + '\'';
-    this.parsedText += template;
+    //TODO resolve url and add require
+    this.parsedText += ('template: ' + '\'' + cmp.templateUrl.url + '\'');
     this.index += cmp.templateUrl.url.length + (cmp.templateUrl.index - cmp.templateUrlIndex) + 2;
   }
 
