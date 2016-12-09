@@ -117,13 +117,13 @@ describe('Parser', () => {
       '})';
 
     //when
-    let result = parser.parse(text);
+    let result = parser.parse(text, 'src/main/file.js');
 
     //then
     expect(result).toBe(
       '/*@ngInject*/\n' +
       'function myDirective () {' +
-      'return {template: \'src/template.url\',controller: /*ngInject*/function () {}}' +
+      'return {template: require(\'../template.url\'),controller: /*ngInject*/function () {}}' +
       '}'
     );
   });
@@ -139,13 +139,13 @@ describe('Parser', () => {
       '})';
   
     //when
-    let result = parser.parse(text);
+    let result = parser.parse(text, 'src/file.js');
   
     //then
     expect(result).toBe(
       '/*@ngInject*/\n' +
       'function config () {' +
-        'stateProvider.state({template: \'src/template.url\',controller: /*ngInject*/function () {}});' +
+        'stateProvider.state({template: require(\'./template.url\'),controller: /*ngInject*/function () {}});' +
       '}'
     );
   });

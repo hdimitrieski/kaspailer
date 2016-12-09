@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import {ANGULAR_COMPONENT, ANGULAR_CONFIGURATION} from './constants';
+import {resolveRelativeUrl} from './utils';
 
 class TextParser {
   constructor(componentResolver) {
-    this.text = '';
     this.componentResolver = componentResolver;
   }
 //TODO sort by index and check for each cmp
@@ -144,8 +144,8 @@ class TextParser {
   }
 
   replaceTemplateUrl(cmp) {
-    //TODO resolve url and add require
-    this.parsedText += ('template: ' + '\'' + cmp.templateUrl.url + '\'');
+    let relUrl = resolveRelativeUrl(this.filePath, cmp.templateUrl.url);
+    this.parsedText += ('template: require' + '(\'' + relUrl + '\')');
     this.index += cmp.templateUrl.url.length + (cmp.templateUrl.index - cmp.templateUrlIndex) + 2;
   }
 

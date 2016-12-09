@@ -47,8 +47,8 @@ const resolveRelativeUrl = (root, absPath) => {
   let rootArr = _.without(root.split(/\/|\\/), '');
   let absArr = _.without(absPath.split(/\/|\\/), '');
 
-  let fileName = rootArr.splice(rootArr.length - 1, 1);
-  absArr.splice(absArr.length - 1, 1);
+  let fileName = absArr.splice(absArr.length - 1, 1);
+  rootArr.splice(rootArr.length - 1, 1);
 
   return resolveRelativePath(rootArr, absArr) + fileName;
 };
