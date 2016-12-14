@@ -1,5 +1,5 @@
 import expect from 'expect';
-import {resolveFileName, resolveRelativePath, resolveRelativeUrl} from '../src/utils';
+import {resolveFileName, resolveRelativePath, resolveRelativeUrl} from '../src/common/utils';
 
 describe('Utils', () => {
 

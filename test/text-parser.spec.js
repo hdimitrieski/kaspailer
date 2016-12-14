@@ -1,16 +1,10 @@
 import expect from 'expect';
-import ComponentResolver from '../src/component-resolver';
-import TextParser from '../src/text-parser';
+import transformer from '../src/transformer';
 
-describe('Parser', () => {
-  let parser;
-
-  beforeEach(() => {
-    parser = new TextParser(new ComponentResolver());
-  });
+describe('transformer', () => {
 
   it('should initialize', () => {
-    expect(parser).toExist();
+    expect(transformer).toExist();
   });
 
   it('should parse text', () => {
@@ -19,7 +13,7 @@ describe('Parser', () => {
       '.controller("MyController", MyController);';
 
     //when
-    let result = parser.parse(text);
+    let result = transformer.parse(text);
 
     //then
     expect(result).toBe('/*ngInject*/var MyController = function () {};');
@@ -33,7 +27,7 @@ describe('Parser', () => {
       '.controller("MyController2", function () {});';
 
     //when
-    let result = parser.parse(text);
+    let result = transformer.parse(text);
 
     //then
     expect(result).toBe(
@@ -53,7 +47,7 @@ describe('Parser', () => {
       '.controller("MyController2",function(){});';
 
     //when
-    let result = parser.parse(text);
+    let result = transformer.parse(text);
 
     //then
     expect(result).toBe(
@@ -74,7 +68,7 @@ describe('Parser', () => {
       '.controller("MyController2", function () {});';
 
     //when
-    let result = parser.parse(text);
+    let result = transformer.parse(text);
 
     //then
     expect(result).toBe(
@@ -96,7 +90,7 @@ describe('Parser', () => {
       '.factory("myService", myService);';
 
     //when
-    let result = parser.parse(text);
+    let result = transformer.parse(text);
 
     //then
     expect(result).toBe(
@@ -117,7 +111,7 @@ describe('Parser', () => {
       '})';
 
     //when
-    let result = parser.parse(text, 'src/main/file.js');
+    let result = transformer.parse(text, 'src/main/file.js');
 
     //then
     expect(result).toBe(
@@ -139,7 +133,7 @@ describe('Parser', () => {
       '})';
   
     //when
-    let result = parser.parse(text, 'src/file.js');
+    let result = transformer.parse(text, 'src/file.js');
   
     //then
     expect(result).toBe(

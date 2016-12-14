@@ -1,11 +1,11 @@
-import lexer from './lexer';
+import lexer from '../lexer';
 import {
   KEYWORDS,
   ANGULAR_COMPONENT,
   ANGULAR,
   MODULE,
   ANGULAR_CONFIGURATION
-} from './constants';
+} from '../common/constants';
 
 class ComponentResolver {
   constructor() {
@@ -465,4 +465,4 @@ class ComponentResolver {
 
 }
 
-export default ComponentResolver;
+export default new ComponentResolver();

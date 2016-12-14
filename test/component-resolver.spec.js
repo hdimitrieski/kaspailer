@@ -1,11 +1,11 @@
 import expect from 'expect';
-import ComponentResolver from '../src';
+import {componentResolver} from '../src/resolvers';
 
 describe('Parser', () => {
   let resolver;
 
   beforeEach(() => {
-    resolver = new ComponentResolver();
+    resolver = componentResolver;
   });
 
   it('should initialize', () => {

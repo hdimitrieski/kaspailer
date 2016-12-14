@@ -56,4 +56,4 @@ const readDirectory = (root, opts, fileHandler) => {
   });
 };
 
-export {readDirectory};
+export default readDirectory;

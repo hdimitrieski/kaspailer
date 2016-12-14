@@ -1,5 +1,5 @@
 import expect from 'expect';
-import {Lexer} from '../src';
+import Lexer from '../src/lexer';
 
 describe('Lexer', () => {
   let lexer = Lexer;

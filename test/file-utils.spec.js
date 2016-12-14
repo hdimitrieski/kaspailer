@@ -1,5 +1,5 @@
 import expect from 'expect';
-import {readDirectory} from '../src/file-utils';
+import {readDirectory} from '../src/traverser';
 
 describe('FileUtils', () => {
 

@@ -43,4 +43,4 @@ class ModuleResolver {
 
 }
 
-export {ModuleResolver};
+export default new ModuleResolver();

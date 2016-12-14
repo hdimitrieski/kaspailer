@@ -1,5 +1,5 @@
 import expect from 'expect';
-import {TreeResolver} from '../src';
+import TreeResolver from '../src/tree-resolver';
 
 describe('Parser', () => {
   let resolver;

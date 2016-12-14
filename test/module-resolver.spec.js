@@ -1,13 +1,8 @@
 import expect from 'expect';
-import {ModuleResolver} from '../src/module-resolver';
+import {moduleResolver} from '../src/resolvers';
 
 describe('ModuleResolver', () => {
-  let moduleResolver;
-
-  beforeEach(() => {
-    moduleResolver = new ModuleResolver();
-  });
-
+  
   it('should return text for a given module', () => {
     //given
     let components = {

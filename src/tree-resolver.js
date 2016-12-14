@@ -1,7 +1,7 @@
 import lexer from './lexer';
 import {
   ANGULAR
-} from './constants';
+} from './common/constants';
 
 class ComponentResolver2 {
   constructor() {

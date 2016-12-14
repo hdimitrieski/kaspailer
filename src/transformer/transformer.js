@@ -1,16 +1,16 @@
 import _ from 'lodash';
-import {ANGULAR_COMPONENT, ANGULAR_CONFIGURATION} from './constants';
-import {resolveRelativeUrl} from './utils';
+import {ANGULAR_COMPONENT, ANGULAR_CONFIGURATION} from '../common/constants';
+import {resolveRelativeUrl} from '../common/utils';
+import {componentResolver} from '../resolvers';
 
 class TextParser {
-  constructor(componentResolver) {
-    this.componentResolver = componentResolver;
+  constructor() {
   }
 //TODO sort by index and check for each cmp
   parse(txt, filePath) {
     this.text = txt;
     this.filePath = filePath;
-    this.tokens = this.componentResolver.resolve(txt);
+    this.tokens = componentResolver.resolve(txt);
     this.parsedText = '';
     this.index = 0;
 
@@ -154,4 +154,4 @@ class TextParser {
   }
 }
 
-export default TextParser;
+export default new TextParser();

@@ -6,7 +6,7 @@ import {
   ANGULAR,
   ANGULAR_COMPONENT,
   ANGULAR_CONFIGURATION
-} from './constants';
+} from '../common/constants';
 
 class Lexer {
   constructor() {
