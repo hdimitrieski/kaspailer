@@ -24,7 +24,6 @@
   "rules": {
     ////////// Possible Errors //////////
 
-    "no-console": 2,
     // disallow use of console (off by default in the node environment)
     "no-dupe-keys": 2,
     // disallow duplicate keys when creating object literals
