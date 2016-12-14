@@ -655,6 +655,45 @@ describe('Parser', () => {
     expect(d1.templateUrl.url).toBe('src/test');
   });
 
+  it('should parse directives properties - controller and templateUrl 2', () => {
+    //given
+    let text = 'angular.module("my.module")' +
+      '.directive("myDirective", function () {' +
+      'return {' +
+      'templateUrl: "src/test",' +
+      'controller: function (arg1) {},' +
+      'link: function(scope) {}' +
+      '};' +
+      '});';
+
+    //when
+    resolver.resolve(text);
+
+    //then
+    let characters = resolver.characters;
+    expect(characters.length).toBe(5);
+
+    let modules = resolver.modules;
+    expect(modules.length).toBe(1);
+
+    let m1 = modules[0];
+    expect(m1.name).toBe('my.module');
+
+    let m1Components = resolver.components[m1.name];
+    expect(m1Components).toExist();
+    expect(m1Components.length).toBe(1);
+
+    let d1 = m1Components[0];
+    expect(d1.name).toBe('myDirective');
+    expect(d1.type).toBe('directive');
+    expect(d1.hasFnReference).toBe(false);
+    expect(d1.functionName).toNotExist();
+    expect(d1.internalControllerIndex).toBe(110);
+    expect(d1.templateUrlIndex).toBe(74);
+    expect(d1.templateUrl.index).toBe(87);
+    expect(d1.templateUrl.url).toBe('src/test');
+  });
+
   it('should resolve angular config definitions', () => {
     //given
     let text = 'angular.module("my.module")' +

@@ -188,7 +188,7 @@ class ComponentResolver {
     } else if (this.isObjectLiteral(cmpDeclarationToken)) {
       component.object = true;
       this.addTokenToRemove(endToken);
-      this.resolveComponentInside(component, '(');
+      this.resolveComponentInside(component, '{');
     } else {
       component.hasFnReference = true;
       component.functionName = cmpDeclarationToken.text;
@@ -210,10 +210,12 @@ class ComponentResolver {
    * Resolves the templateUrl and controller that are defined inside the objects such as directives and configs.
    *
    * @param component component definition
+   * @param bracket open bracket
    * */
-  resolveComponentInside(component) {
+  resolveComponentInside(component, bracket) {
     let stack = [];
-    stack.push('(');
+    stack.push(bracket);
+    let closedBracket = bracket === '(' ? ')' : '}';
     let current = undefined;
 
     while (stack.length > 0) {
@@ -235,15 +237,19 @@ class ComponentResolver {
               index: templateUrlToken.index
             };
         }
-      } else if (current.text === '(') {
+      } else if (current.text === bracket) {
         stack.push(current.text);
-      } else if (current.text === ')') {
+      } else if (current.text === closedBracket) {
         stack.pop();
       }
     }
-
-    this.addTokenToRemove(current);
-
+    
+    current = !component.object ? current : this.next();
+    
+    if (current.text === ')') {
+      this.addTokenToRemove(current);
+    }
+    
     if (this.peek(';')) {
       this.addTokenToRemove(this.consume(';'));
     }
