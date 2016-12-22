@@ -11,7 +11,8 @@
     "test:watch": "cross-env NODE_ENV=test mocha --compilers js:babel-core/register --recursive --watch",
     "test:cov": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --reporter dot test/",
     "test:travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --reporter spec test/",
-    "prepublish": "npm run lint && npm run test && npm run clean && npm run build"
+    "prepublish": "npm run lint && npm run test && npm run clean && npm run build",
+    "postinstall": "npm run clean && npm run build"
   },
   "files": [
     "dest",

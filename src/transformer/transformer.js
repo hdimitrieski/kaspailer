@@ -7,6 +7,9 @@ class TextParser {
   constructor() {
   }
 //TODO sort by index and check for each cmp
+
+  // TODO @saskodh: export the generated components from the file at the end
+  // TODO @saskodh: remove 'use strict'; completely from the files
   parse(txt, filePath) {
     this.text = txt;
     this.filePath = filePath;

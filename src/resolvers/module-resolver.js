@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+// TODO @saskodh: sort the components when registering to angular (ex. first the directives, then controllers and etc.)
 class ModuleResolver {
   constructor() {
   }
