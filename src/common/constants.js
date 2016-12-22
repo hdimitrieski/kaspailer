@@ -45,6 +45,7 @@ const MODULE = 'module';
 
 const ANGULAR = 'angular';
 
+// TODO @saskodh: add support for angular.component
 const ANGULAR_COMPONENT = {
   'controller': 'controller',
   'directive': 'directive',
