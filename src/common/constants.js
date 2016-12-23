@@ -53,6 +53,7 @@ const ANGULAR_COMPONENT = {
   'directive': 'directive',
   'filter': 'filter',
   'constant': 'constant',
+  'value': 'value',
   'service': 'service',
   'factory': 'factory',
   'provider': 'provider',

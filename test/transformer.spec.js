@@ -44,10 +44,10 @@ describe('transformer', () => {
       '/*@ngInject*/\n' +
       'function MyController () {}' +
       '\n/*@ngInject*/\n' +
-      'function MyController1 () {}' +
+      'function MyController1Controller () {}' +
       '\n/*@ngInject*/\n' +
-      'function MyController2 () {}' +
-      '\nexport {MyController, MyController1, MyController2};'
+      'function MyController2Controller () {}' +
+      '\nexport {MyController, MyController1Controller, MyController2Controller};'
     );
   });
 
@@ -68,8 +68,8 @@ describe('transformer', () => {
       '\n/*@ngInject*/\n' +
       'function myFilter(){}' +
       '\n/*@ngInject*/\n' +
-      'function MyController2(){}' +
-      '\nexport {myFactory, myFilter, MyController2};'
+      'function MyController2Controller(){}' +
+      '\nexport {myFactory, myFilter, MyController2Controller};'
     );
   });
 
@@ -88,10 +88,10 @@ describe('transformer', () => {
     expect(result).toBe(
       '/*ngInject*/var MyController = function () {};' +
       '\n/*@ngInject*/\n' +
-      'function MyController1 () {}' +
+      'function MyController1Controller () {}' +
       '\n/*@ngInject*/\n' +
-      'function MyController2 () {}' +
-      '\nexport {MyController, MyController1, MyController2};'
+      'function MyController2Controller () {}' +
+      '\nexport {MyController, MyController1Controller, MyController2Controller};'
     );
   });
 
@@ -112,8 +112,8 @@ describe('transformer', () => {
     expect(result).toBe(
       '/*ngInject*/var MyController = function () {};\n' +
       '/*ngInject*/var myService = function () {};\n' +
-      '/*@ngInject*/\nfunction MyController2 () {}\n' +
-      '\nexport {MyController, MyController2, myService};'
+      '/*@ngInject*/\nfunction MyController2Controller () {}\n' +
+      '\nexport {MyController, MyController2Controller, myService};'
     );
   });
 
@@ -158,10 +158,10 @@ describe('transformer', () => {
     //then
     expect(result).toBe(
       '/*@ngInject*/\n' +
-      'function config () {' +
+      'function fileConfig1 () {' +
         'stateProvider.state({template: require(\'./template.url\'),controller: /*ngInject*/function () {}});' +
       '}'+
-      '\nexport {config};'
+      '\nexport {fileConfig1};'
     );
   });
 

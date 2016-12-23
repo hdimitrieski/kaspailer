@@ -7,7 +7,7 @@ describe('ModuleResolver', () => {
   beforeEach(() => {
     moduleResolver = new ModuleResolver();
   });
-  
+
   it('should return text for a given module', () => {
     //given
     let components = {
@@ -30,7 +30,7 @@ describe('ModuleResolver', () => {
     //then
     expect(result['my.module'].path).toBe('src/test');
     expect(result['my.module'].text).toBe(
-      'import {myCtrl} from \'src/test/my-ctrl.js\';\n' +
+      'import {myCtrl} from \'./test/my-ctrl\';\n' +
       '\n' +
       'angular.module(\'my.module\', [\n' +
       '\t\'my.dep1\',\n' +
@@ -65,8 +65,8 @@ describe('ModuleResolver', () => {
     //then
     expect(result['my.module'].path).toBe('src/test');
     expect(result['my.module'].text).toBe(
-      'import {myCtrl} from \'src/test/my-ctrl.js\';\n' +
-      'import {myFactory} from \'src/test/my-factory.js\';\n' +
+      'import {myCtrl} from \'./test/my-ctrl\';\n' +
+      'import {myFactory} from \'./test/my-factory\';\n' +
       '\n' +
       'angular.module(\'my.module\', [\n' +
       '\t\'my.dep1\',\n' +
@@ -102,7 +102,7 @@ describe('ModuleResolver', () => {
     //then
     expect(result['my.module'].path).toBe('src/test');
     expect(result['my.module'].text).toBe(
-      'import {myCtrl} from \'src/test/my-ctrl.js\';\n' +
+      'import {myCtrl} from \'./test/my-ctrl\';\n' +
       '\n' +
       'angular.module(\'my.module\', [\n' +
       '\t\'my.dep1\',\n' +
