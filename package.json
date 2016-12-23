@@ -2,7 +2,7 @@
   "name": "kaspailer",
   "version": "0.0.1",
   "description": "Transforms angular.js code written in java script to ecma script 6 angular code",
-  "main": "dest/index.js",
+  "main": "dest/kaspailer.js",
   "scripts": {
     "clean": "rimraf dest coverage",
     "build": "babel src --out-dir dest",

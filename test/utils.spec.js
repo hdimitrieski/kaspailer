@@ -1,5 +1,10 @@
-import expect from 'expect';
-import {resolveFileName, resolveRelativePath, resolveRelativeUrl} from '../src/common/utils';
+let expect = require('expect');
+let {
+  resolveFileName,
+  resolveRelativePath,
+  resolveRelativeUrl,
+  getRootDirectory
+} = require('../src/common/utils');
 
 describe('Utils', () => {
 
@@ -125,6 +130,17 @@ describe('Utils', () => {
 
     //then
     expect(result).toBe('./test/file2/file.tpl.html');
+  });
+
+  it('should get root directory', () => {
+    //given
+    let path = 'src/main/file.js';
+
+    //when
+    let result = getRootDirectory(path);
+
+    //then
+    expect(result).toBe('src/main');
   });
 
 });

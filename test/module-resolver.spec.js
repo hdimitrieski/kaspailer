@@ -1,7 +1,12 @@
-import expect from 'expect';
-import {moduleResolver} from '../src/resolvers';
+let expect = require('expect');
+let ModuleResolver = require('../src/resolvers/module-resolver');
 
 describe('ModuleResolver', () => {
+  let moduleResolver = undefined;
+
+  beforeEach(() => {
+    moduleResolver = new ModuleResolver();
+  });
   
   it('should return text for a given module', () => {
     //given

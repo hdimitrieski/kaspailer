@@ -3,6 +3,7 @@ const OPERATORS = {
   '-': true,
   '*': true,
   '%': true,
+  '/': true,
   '===': true,
   '!==': true,
   '==': true,
@@ -15,7 +16,8 @@ const OPERATORS = {
   '||': true,
   '!': true,
   '=': true,
-  '|': true
+  '|': true,
+  '&': true
 };
 
 const ESCAPE = {
@@ -62,9 +64,7 @@ const ANGULAR_CONFIGURATION = {
   'run': 'run'
 };
 
-export default OPERATORS;
-
-export {
+module.exports = {
   OPERATORS,
   ESCAPE,
   WHITE_SPACE,

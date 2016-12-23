@@ -1,4 +1,4 @@
-import {
+const {
   WHITE_SPACE,
   OPERATORS,
   ESCAPE,
@@ -6,7 +6,9 @@ import {
   ANGULAR,
   ANGULAR_COMPONENT,
   ANGULAR_CONFIGURATION
-} from '../common/constants';
+} = require('../common/constants');
+
+
 
 class Lexer {
   constructor() {
@@ -23,6 +25,10 @@ class Lexer {
         this.readSingleLineComment();
       } else if (ch == '/' && this.peek() === '*') {
         this.readMultiLineComment();
+      } else if (ch === '/' && this.peek() !== '/') {
+        if (!this.readRegex()) {
+          this.readOperator();
+        }
       } else if (ch === '"' || ch === '\'') {
         this.readString(ch);
       } else if (this.isNumber(ch)) {
@@ -35,7 +41,7 @@ class Lexer {
       } else if (this.isWhitespace(ch)) {
         this.index++;
       } else if (this.isOperator(ch)) {
-        this.readOperator()
+        this.readOperator();
       } else {
         this.index++;
       }
@@ -60,6 +66,47 @@ class Lexer {
       ch = this.nextCharacter();
     }
     this.index += 2;
+  }
+
+  readRegex() {
+    let start = this.index;
+    let string = '';
+    let rawString = '/';
+    let escape = false;
+    this.index++;
+
+    while (this.index < this.text.length) {
+      let ch = this.currentCharacter();
+      if (ch == '\n') {
+        break;
+      }
+      rawString += ch;
+      if (escape) {
+        let rep = ESCAPE[ch];
+        string = string + (rep || ch);
+        escape = false;
+      } else if (ch === '\\') {
+        escape = true;
+      } else if (ch === '/') {
+        this.index++;
+        ch = this.currentCharacter();
+        if (this.isAlpha(ch)) {
+          string += ch;
+          this.index++;
+        }
+        this.tokens.push({
+          index: start,
+          text: rawString,
+          regex: true
+        });
+        return true;
+      } else {
+        string += ch;
+      }
+      this.index++;
+    }
+    this.index = start;
+    return false;
   }
 
   readString(quote) {
@@ -161,11 +208,15 @@ class Lexer {
   }
 
   isValidIdentifierStart(ch) {
-    return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || '_' === ch || ch === '$';
+    return this.isAlpha(ch) || '_' === ch || ch === '$';
   }
 
   isIdentifier(ch) {
     return this.isValidIdentifierStart(ch) || this.isNumber(ch);
+  }
+
+  isAlpha(ch) {
+    return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z';
   }
 
   isNumber(ch) {
@@ -196,4 +247,4 @@ class Lexer {
 
 }
 
-export default new Lexer();
+module.exports = Lexer;

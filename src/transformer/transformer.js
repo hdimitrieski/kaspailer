@@ -1,19 +1,19 @@
-import _ from 'lodash';
-import {ANGULAR_COMPONENT, ANGULAR_CONFIGURATION} from '../common/constants';
-import {resolveRelativeUrl} from '../common/utils';
-import {componentResolver} from '../resolvers';
+let _ = require('lodash');
+let resolveRelativeUrl = require('../common/utils').resolveRelativeUrl;
+const {ANGULAR_COMPONENT, ANGULAR_CONFIGURATION, MODULE} = require('../common/constants');
 
-class TextParser {
+class Transformer {
   constructor() {
+
   }
 //TODO sort by index and check for each cmp
 
   // TODO @saskodh: export the generated components from the file at the end
   // TODO @saskodh: remove 'use strict'; completely from the files
-  parse(txt, filePath) {
-    this.text = txt;
+  parse(tokens, text, filePath) {
+    this.text = text;
     this.filePath = filePath;
-    this.tokens = componentResolver.resolve(txt);
+    this.tokens = tokens;
     this.parsedText = '';
     this.index = 0;
 
@@ -52,11 +52,18 @@ class TextParser {
         this.addNgInject(cmp);
       }
 
+      if (cmp = this.getConstant()) {
+        this.transformConstant(cmp);
+        change = true;
+      }
+
       if (!change) {
         this.parsedText += this.text[this.index];
         this.index++;
       }
     }
+
+    this.exportComponents();
 
   }
 
@@ -133,6 +140,12 @@ class TextParser {
     });
   }
 
+  getConstant() {
+    return _.find(this.components, (cmp) => {
+      return cmp.start === this.index && cmp.type === ANGULAR_COMPONENT.constant;
+    });
+  }
+
   remove(cmp) {
     this.removeComponent(cmp.start, cmp.end);
   }
@@ -155,6 +168,23 @@ class TextParser {
   addNgInject() {
     this.parsedText += '/*ngInject*/';
   }
+
+  transformConstant(cmp) {
+    this.parsedText += 'const ' + cmp.name + ' =';
+  }
+
+  exportComponents() {
+    let exportText = '\nexport {';
+
+    exportText += this.components
+      .filter((cmp) => cmp.name && cmp.type !== MODULE)
+      .map((cmp) => cmp.name)
+      .join(', ');
+
+    exportText += '};';
+
+    this.parsedText += exportText;
+  }
 }
 
-export default new TextParser();
+module.exports = Transformer;

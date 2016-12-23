@@ -1,5 +1,5 @@
-import expect from 'expect';
-import {readDirectory} from '../src/traverser';
+let expect = require('expect');
+let readDirectory = require('../src/traverser/traverser');
 
 describe('FileUtils', () => {
 
@@ -60,7 +60,7 @@ describe('FileUtils', () => {
     let start = 1;
 
     //when
-    readDirectory(dir, {extensions: extensions}, (text, file) => {
+    readDirectory(dir, {include: extensions}, (text, file) => {
       expect(text).toBe('test content ' + start);
       expect(file.includes('/file-utils-test/test2') || file.includes('\\file-utils-test\\test2')).toBeTruthy();
       expect(file.includes('/file' + start + '.txt' + start) || file.includes('\\file' + start + '.txt' + start)).toBeTruthy();

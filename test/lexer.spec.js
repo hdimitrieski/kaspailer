@@ -1,8 +1,12 @@
-import expect from 'expect';
-import Lexer from '../src/lexer';
+let expect = require('expect');
+let Lexer = require('../src/lexer/lexer');
 
 describe('Lexer', () => {
-  let lexer = Lexer;
+  let lexer = undefined;
+
+  beforeEach(() => {
+    lexer = new Lexer();
+  });
 
   it('should initialize the lexer', () => {
     expect(lexer).toExist();
@@ -352,6 +356,52 @@ describe('Lexer', () => {
     expect(tokens[21].text).toBe('}');
     expect(tokens[22].text).toBe(')');
     expect(tokens[23].text).toBe(';');
+  });
+
+  it('should return tokens for js regex', () => {
+    //given
+    let text = '/"/g';
+
+    //when
+    let tokens = lexer.lex(text);
+
+    //then
+    expect(tokens.length).toBe(1);
+    expect(tokens[0].regex).toBe(true);
+  });
+
+  it('should return tokens for js regex 2', () => {
+    //given
+    let text = '/\B(?=(\d{3})+($))/g';
+
+    //when
+    let tokens = lexer.lex(text);
+
+    //then
+    expect(tokens.length).toBe(1);
+    expect(tokens[0].regex).toBe(true);
+  });
+
+  it('should return tokens', () => {
+    //given
+    let text = 'resultObject.currentMemory = (currentMemory / 1048576);';
+
+    //when
+    let tokens = lexer.lex(text);
+
+    //then
+    expect(tokens.length).toBe(10);
+  });
+
+  it('should return tokens 2', () => {
+    //given
+    let text = 'scope.orcaMasterForm = ctrls.length > 0 && ctrls[0] ? ctrls[0].getMasterForm() : undefined;';
+
+    //when
+    let tokens = lexer.lex(text);
+
+    //then
+    expect(tokens.length).toBe(26);
   });
 
 });

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+let _ = require('lodash');
 
 // TODO @saskodh: sort the components when registering to angular (ex. first the directives, then controllers and etc.)
 class ModuleResolver {
@@ -11,6 +11,7 @@ class ModuleResolver {
     this.components = components;
 
     this.modules.forEach((module) => {
+      console.info('Resolving module: ' + module.name);
       this.resolvedModules[module.name] = {path: module.path, text: this.getText(module)};
     });
 
@@ -19,10 +20,20 @@ class ModuleResolver {
 
   getText(module) {
     let text = '';
+    let moduleExportText = '';
     let moduleComponents = this.components[module.name];
 
+    moduleExportText += `\nangular.module(\'${module.name}\', [\n`;
+
+    module.dependencies.forEach((d) => {
+      moduleExportText += `\t\'${d}\',\n`
+    });
+
+    moduleExportText += `])\n`;
+
     if (!moduleComponents) {
-      throw new Error('No components are defined for module: ' + module.name);
+      console.warn('No components are defined for module: ' + module.name);
+      return moduleExportText;
     }
 
     let cmpDefText = '';
@@ -31,17 +42,12 @@ class ModuleResolver {
       cmpDefText += `.${cmp.type}(\'${cmp.name}\', ${cmp.name})\n`;
     });
 
-    text += `\nangular.module(\'${module.name}\', [\n`;
-
-    module.dependencies.forEach((d) => {
-      text += `\t\'${d}\',\n`
-    });
-
-    text += `])\n${cmpDefText};`;
+    text += moduleExportText;
+    text += `${cmpDefText};`;
 
     return text;
   }
 
 }
 
-export default new ModuleResolver();
+module.exports = ModuleResolver;

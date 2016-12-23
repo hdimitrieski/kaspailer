@@ -1,4 +1,4 @@
-import _ from 'lodash';
+let _ = require('lodash');
 
 const resolveFileName = (fileName) => {
   if (!fileName) {
@@ -53,4 +53,15 @@ const resolveRelativeUrl = (root, absPath) => {
   return resolveRelativePath(rootArr, absArr) + fileName;
 };
 
-export {resolveFileName, resolveRelativePath, resolveRelativeUrl};
+const getRootDirectory = (filePath) => {
+  let rootArr = _.without(filePath.split(/\/|\\/), '');
+  rootArr.splice(rootArr.length - 1, 1);
+  return rootArr.join('/');
+};
+
+module.exports = {
+  resolveFileName,
+  resolveRelativePath,
+  resolveRelativeUrl,
+  getRootDirectory
+};

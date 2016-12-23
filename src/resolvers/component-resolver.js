@@ -1,14 +1,16 @@
-import lexer from '../lexer';
-import {
+let Lexer = require('../lexer/lexer');
+const {
   KEYWORDS,
   ANGULAR_COMPONENT,
   ANGULAR,
   MODULE,
   ANGULAR_CONFIGURATION
-} from '../common/constants';
+} = require('../common/constants');
+
 
 class ComponentResolver {
   constructor() {
+    this.lexer = new Lexer();
   }
 
   /**
@@ -19,8 +21,7 @@ class ComponentResolver {
    * @return {Object} resolved objects
    * */
   resolve(text, filePath) {
-    //TODO file path
-    this.tokens = lexer.lex(text);
+    this.tokens = this.lexer.lex(text);
     this.filePath = filePath;
     this.functions = [];
     this.modules = [];
@@ -56,7 +57,8 @@ class ComponentResolver {
    * @return {boolean}
    * */
   isAngularIdentifier(token) {
-    return token.identifier && ANGULAR === token.text;
+    return token.identifier && ANGULAR === token.text && this.peekAhead(1, '.')
+      && (this.isAngularComponent(this.peekAhead(2)) || this.isAngularModule(this.peekAhead(2)) || this.isAngularConfiguration(this.peekAhead(2)));
   }
 
   /**
@@ -118,7 +120,8 @@ class ComponentResolver {
     let module = {
       start: start,
       name: moduleNameToken.value,
-      path: this.filePath
+      path: this.filePath,
+      type: MODULE
     };
 
     if (this.expect(',')) {
@@ -180,7 +183,10 @@ class ComponentResolver {
 
     let cmpDeclarationToken = cmpNameToken.string ? this.next() : cmpNameToken;
 
-    if (this.isFunction(cmpDeclarationToken)) {
+    if (this.isAngularConstant(component)) {
+      this.addTokenToRemove(endToken);
+      this.resolveConstant(component, cmpDeclarationToken);
+    } else if (this.isFunction(cmpDeclarationToken)) {
       component.functionEnd = cmpDeclarationToken.index + KEYWORDS.function.length - 1;
       component.hasFnReference = false;
       this.addTokenToRemove(endToken);
@@ -204,6 +210,25 @@ class ComponentResolver {
 
     component.end = endToken.index;
     this.components[moduleName].push(component);
+  }
+
+  resolveConstant(component, cmpDeclarationToken) {
+    if (this.isObjectLiteral(cmpDeclarationToken)) {
+      component.object = true;
+      this.resolveComponentInside(component, '{');
+    } else if (cmpDeclarationToken.text === '[') {
+      this.resolveArguments(']');
+      this.next();
+      this.addTokenToRemove(this.next());
+      if (this.peek(';')) {
+        this.addTokenToRemove(this.next());
+      }
+    } else if (cmpDeclarationToken.string) {
+      this.addTokenToRemove(this.next());
+      if (this.peek(';')) {
+        this.addTokenToRemove(this.next());
+      }
+    }
   }
 
   /**
@@ -237,7 +262,7 @@ class ComponentResolver {
               index: templateUrlToken.index
             };
         }
-      } else if (current.text === bracket) {
+      } if (current.text === bracket) {
         stack.push(current.text);
       } else if (current.text === closedBracket) {
         stack.pop();
@@ -269,6 +294,10 @@ class ComponentResolver {
     return ANGULAR_COMPONENT.directive === component.type;
   }
 
+  isAngularConstant(component) {
+    return ANGULAR_COMPONENT.constant === component.type;
+  }
+
   /**
    * Returns true if the token is controller.
    *
@@ -286,7 +315,7 @@ class ComponentResolver {
    * @return {Boolean}
    * */
   isVariable(token) {
-    return token.identifier && token.text === KEYWORDS.var;
+    return token.identifier && token.text === KEYWORDS.var && !this.peekAhead(2, ';');
   }
 
   /**
@@ -471,4 +500,4 @@ class ComponentResolver {
 
 }
 
-export default new ComponentResolver();
+module.exports = ComponentResolver;
