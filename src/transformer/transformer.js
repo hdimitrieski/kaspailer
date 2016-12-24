@@ -1,6 +1,8 @@
 let _ = require('lodash');
 let resolveRelativeUrl = require('../common/utils').resolveRelativeUrl;
 const {ANGULAR_COMPONENT, ANGULAR_CONFIGURATION, MODULE} = require('../common/constants');
+let resolveFileName = require('../common/utils').resolveFileName;
+let path = require('path');
 
 class Transformer {
   constructor() {
@@ -86,11 +88,21 @@ class Transformer {
   getFunctionsToAdd(components) {
     let functions = [];
 
+    // NOTE @saskodh: enumerate config and run functions (may be more than one in one file)
+    let functionPostfixIndex = 1;
+
     _.forEach(components, (cmp) => {
       if (!cmp.hasFnReference && ANGULAR_COMPONENT[cmp.type]) {
+        // NOTE @saskodh: add component type postfix (ex. service and directive may have the same name)
+        if (cmp.type !== ANGULAR_COMPONENT.value && cmp.type !== ANGULAR_COMPONENT.constant) {
+          let typePostfix = _.capitalize(cmp.type);
+          cmp.name = _.endsWith(cmp.name, typePostfix) ? cmp.name : cmp.name + typePostfix;
+        }
         functions.push(cmp);
-      } else if (!cmp.hasFnReference && cmp.type === ANGULAR_CONFIGURATION.config) {
-        cmp.name = 'config';
+      } else if (!cmp.hasFnReference && (cmp.type === ANGULAR_CONFIGURATION.config || cmp.type === ANGULAR_CONFIGURATION.run)) {
+        // NOTE @saskodh: generate suitable name for config and run functions
+        let fileName = resolveFileName(path.basename(cmp.path));
+        cmp.name = fileName + _.capitalize(cmp.type) + (functionPostfixIndex++);
         functions.push(cmp);
       }
     });
@@ -142,7 +154,9 @@ class Transformer {
 
   getConstant() {
     return _.find(this.components, (cmp) => {
-      return cmp.start === this.index && cmp.type === ANGULAR_COMPONENT.constant;
+      // NOTE @saskodh: support for angular.value (same as constant)
+      return cmp.start === this.index &&
+        (cmp.type === ANGULAR_COMPONENT.constant || cmp.type === ANGULAR_COMPONENT.value);
     });
   }
 

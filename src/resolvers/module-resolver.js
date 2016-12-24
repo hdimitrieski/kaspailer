@@ -1,4 +1,5 @@
 let _ = require('lodash');
+let resolveRelativeUrl = require('../common/utils').resolveRelativeUrl;
 
 // TODO @saskodh: sort the components when registering to angular (ex. first the directives, then controllers and etc.)
 class ModuleResolver {
@@ -21,12 +22,15 @@ class ModuleResolver {
   getText(module) {
     let text = '';
     let moduleExportText = '';
-    let moduleComponents = this.components[module.name];
+    // NOTE @saskodh: sort the angular definitions by type
+    let moduleComponents = _.sortBy(this.components[module.name], (c) => c.type);
 
     moduleExportText += `\nangular.module(\'${module.name}\', [\n`;
 
     module.dependencies.forEach((d) => {
-      moduleExportText += `\t\'${d}\',\n`
+      // NOTE @saskodh: in case of run or config => pass only the function
+      let comp = d.replace(/\.run\(.*,\s/, '.run(').replace(/\.config\(.*,\s/, '.config');
+      moduleExportText += `\t\'${comp}\',\n`
     });
 
     moduleExportText += `])\n`;
@@ -38,7 +42,11 @@ class ModuleResolver {
 
     let cmpDefText = '';
     moduleComponents.forEach((cmp) => {
-      text += `import {${cmp.name}} from \'${cmp.path}\';\n`;
+      // NOTE @saskodh: creates correct import path, no matter the platform
+      let modulePath = module.path;
+      let componentPath = cmp.path.replace('\\\\', '\\').split(/\\|\//).join('/');
+      let importPath = resolveRelativeUrl(modulePath, componentPath).replace('.js', '');
+      text += `import {${cmp.name}} from \'${importPath}\';\n`;
       cmpDefText += `.${cmp.type}(\'${cmp.name}\', ${cmp.name})\n`;
     });
 

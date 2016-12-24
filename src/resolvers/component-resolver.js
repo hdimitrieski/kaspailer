@@ -213,6 +213,8 @@ class ComponentResolver {
   }
 
   resolveConstant(component, cmpDeclarationToken) {
+    // TODO @saskodh: the constant can be number or concatenated string
+    // TODO @saskodh: add semicolon at the end of the constant definition
     if (this.isObjectLiteral(cmpDeclarationToken)) {
       component.object = true;
       this.resolveComponentInside(component, '{');
@@ -253,7 +255,9 @@ class ComponentResolver {
           if (ctrl.text === KEYWORDS.function) {
             component.internalControllerIndex = ctrl.index;
           }
-        } else if (current.text === 'templateUrl') {
+        } else if (current.text === 'templateUrl' && !component.templateUrl) {
+          // NOTE @saskodh: if templateUrl not yet resolved
+          // Didn't had time to debug it why but in some files where that have templateUrl somewhere in the code, it tries to use it
           component.templateUrlIndex = current.index;
           this.consume(':');
           let templateUrlToken = this.next();
@@ -268,13 +272,13 @@ class ComponentResolver {
         stack.pop();
       }
     }
-    
+
     current = !component.object ? current : this.next();
-    
+
     if (current.text === ')') {
       this.addTokenToRemove(current);
     }
-    
+
     if (this.peek(';')) {
       this.addTokenToRemove(this.consume(';'));
     }
@@ -295,7 +299,8 @@ class ComponentResolver {
   }
 
   isAngularConstant(component) {
-    return ANGULAR_COMPONENT.constant === component.type;
+    // NOTE @saskodh: support for angular.value (same as constant)
+    return ANGULAR_COMPONENT.constant === component.type || ANGULAR_COMPONENT.value === component.type;
   }
 
   /**
