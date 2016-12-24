@@ -37,6 +37,12 @@ class ComponentResolver {
         this.resolveVariable();
       } else if (this.isFunction(currentToken)) {
         this.resolveFunction();
+      } else if (currentToken.string && currentToken.value === 'use strict') {
+        this.addTokenToRemove(currentToken);
+        this.next();
+        if (this.peek(';')) {
+          this.addTokenToRemove(this.next());
+        }
       } else {
         this.next();
       }
@@ -177,7 +183,7 @@ class ComponentResolver {
       module: moduleName,
       type: cmpType,
       start: componentTypeToken.index,
-      name: cmpNameToken.string ? cmpNameToken.value : undefined,//TODO resolve config/run name
+      name: cmpNameToken.string ? cmpNameToken.value : undefined,
       path: this.filePath
     };
 
@@ -213,8 +219,6 @@ class ComponentResolver {
   }
 
   resolveConstant(component, cmpDeclarationToken) {
-    // TODO @saskodh: the constant can be number or concatenated string
-    // TODO @saskodh: add semicolon at the end of the constant definition
     if (this.isObjectLiteral(cmpDeclarationToken)) {
       component.object = true;
       this.resolveComponentInside(component, '{');
@@ -222,14 +226,14 @@ class ComponentResolver {
       this.resolveArguments(']');
       this.next();
       this.addTokenToRemove(this.next());
-      if (this.peek(';')) {
-        this.addTokenToRemove(this.next());
+    } else if (cmpDeclarationToken.string || cmpDeclarationToken.number) {
+      let nextToken = this.next();
+
+      while (nextToken.operator || nextToken.string || nextToken.number) {
+        nextToken = this.next();
       }
-    } else if (cmpDeclarationToken.string) {
-      this.addTokenToRemove(this.next());
-      if (this.peek(';')) {
-        this.addTokenToRemove(this.next());
-      }
+
+      this.addTokenToRemove(nextToken);
     }
   }
 
@@ -259,12 +263,7 @@ class ComponentResolver {
           // NOTE @saskodh: if templateUrl not yet resolved
           // Didn't had time to debug it why but in some files where that have templateUrl somewhere in the code, it tries to use it
           component.templateUrlIndex = current.index;
-          this.consume(':');
-          let templateUrlToken = this.next();
-          component.templateUrl = templateUrlToken.string && {
-              url: templateUrlToken.value,
-              index: templateUrlToken.index
-            };
+          this.resolveTemplateUrl(component);
         }
       } if (current.text === bracket) {
         stack.push(current.text);
@@ -279,8 +278,25 @@ class ComponentResolver {
       this.addTokenToRemove(current);
     }
 
-    if (this.peek(';')) {
+    if (this.peek(';') && !component.object) {
       this.addTokenToRemove(this.consume(';'));
+    }
+  }
+
+  resolveTemplateUrl(component) {
+    let strings = [];
+
+    this.consume(':');
+
+    do {
+      strings.push(this.next());
+    } while (this.expect('+'));
+
+    if (strings.length > 0 && strings[0].string) {
+      component.templateUrl = strings[0].string && {
+          url: strings.map((token) => token.value),
+          index: strings[0].index
+        };
     }
   }
 

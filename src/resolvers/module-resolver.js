@@ -1,7 +1,6 @@
 let _ = require('lodash');
 let resolveRelativeUrl = require('../common/utils').resolveRelativeUrl;
 
-// TODO @saskodh: sort the components when registering to angular (ex. first the directives, then controllers and etc.)
 class ModuleResolver {
   constructor() {
   }

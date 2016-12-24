@@ -8,10 +8,8 @@ class Transformer {
   constructor() {
 
   }
-//TODO sort by index and check for each cmp
+  //TODO sort by index and check for each cmp
 
-  // TODO @saskodh: export the generated components from the file at the end
-  // TODO @saskodh: remove 'use strict'; completely from the files
   parse(tokens, text, filePath) {
     this.text = text;
     this.filePath = filePath;
@@ -66,7 +64,6 @@ class Transformer {
     }
 
     this.exportComponents();
-
   }
 
   getAllElementsSortedByPosition() {
@@ -77,8 +74,13 @@ class Transformer {
     );
 
     let elementsToRemove = _.map(this.tokens.characters, (el) => {
-      el.start = el.index;
-      el.end = el.index + 1;
+      if (el.element === '\'use strict\'' || el.element === '"use strict"') {
+        el.start = el.index;
+        el.end = el.index + 12;
+      } else {
+        el.start = el.index;
+        el.end = el.index + 1;
+      }
       return el;
     });
 
@@ -174,9 +176,12 @@ class Transformer {
   }
 
   replaceTemplateUrl(cmp) {
-    let relUrl = resolveRelativeUrl(this.filePath, cmp.templateUrl.url);
+    let templateUrl = _.reduce(cmp.templateUrl.url, (urlPath, urlPart) => urlPath + urlPart, '');
+    let relUrl = resolveRelativeUrl(this.filePath, templateUrl);
     this.parsedText += ('template: require' + '(\'' + relUrl + '\')');
-    this.index += cmp.templateUrl.url.length + (cmp.templateUrl.index - cmp.templateUrlIndex) + 2;
+    while (this.text[this.index] !== ',' && this.text[this.index] !== '}') {
+      this.index++;
+    }
   }
 
   addNgInject() {
@@ -188,15 +193,18 @@ class Transformer {
   }
 
   exportComponents() {
+    let componentNames = this.components
+      .filter((cmp) => cmp.name && cmp.type !== MODULE)
+      .map((cmp) => cmp.name);
+
+    if (_.isEmpty(componentNames)) {
+      return;
+    }
+
     let exportText = '\nexport {';
 
-    exportText += this.components
-      .filter((cmp) => cmp.name && cmp.type !== MODULE)
-      .map((cmp) => cmp.name)
-      .join(', ');
-
+    exportText += componentNames.join(', ');
     exportText += '};';
-
     this.parsedText += exportText;
   }
 }

@@ -652,7 +652,7 @@ describe('Parser', () => {
     expect(d1.internalControllerIndex).toBe(110);
     expect(d1.templateUrlIndex).toBe(74);
     expect(d1.templateUrl.index).toBe(87);
-    expect(d1.templateUrl.url).toBe('src/test');
+    expect(d1.templateUrl.url).toEqual(['src/test']);
   });
 
   it('should parse directives properties - controller and templateUrl 2', () => {
@@ -691,7 +691,7 @@ describe('Parser', () => {
     expect(d1.internalControllerIndex).toBe(110);
     expect(d1.templateUrlIndex).toBe(74);
     expect(d1.templateUrl.index).toBe(87);
-    expect(d1.templateUrl.url).toBe('src/test');
+    expect(d1.templateUrl.url).toEqual(['src/test']);
   });
 
   it('should resolve angular config definitions', () => {
@@ -769,7 +769,7 @@ describe('Parser', () => {
     expect(c1.module).toBe('my.module');
     expect(c1.internalControllerIndex).toExist();
     expect(c1.templateUrlIndex).toExist();
-    expect(c1.templateUrl.url).toBe('url');
+    expect(c1.templateUrl.url).toEqual(['url']);
   });
 
   it('should resolve angular run definitions', () => {
@@ -820,12 +820,11 @@ describe('Parser', () => {
 
     //then
     let characters = resolver.characters;
-    expect(characters.length).toBe(5);
+    expect(characters.length).toBe(4);
     expect(characters[0].element).toBe(')');
     expect(characters[1].element).toBe('.');
     expect(characters[2].element).toBe(',');
     expect(characters[3].element).toBe(')');
-    expect(characters[4].element).toBe(';');
 
     let modules = resolver.modules;
     expect(modules.length).toBe(1);

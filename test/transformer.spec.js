@@ -174,7 +174,7 @@ describe('transformer', () => {
     let result = transformer.parse(tokens, text, 'src/file.js');
 
     //then
-    expect(result).toBe('const c1 = {tst: \'test\'}\nexport {c1};');
+    expect(result).toBe('const c1 = {tst: \'test\'};\nexport {c1};');
   });
 
   it('should parse text 9', () => {
@@ -186,7 +186,7 @@ describe('transformer', () => {
     let result = transformer.parse(tokens, text, 'src/file.js');
 
     //then
-    expect(result).toBe('const c2 = [\'test\', \'test1\']\nexport {c2};');
+    expect(result).toBe('const c2 = [\'test\', \'test1\'];\nexport {c2};');
   });
 
   it('should parse text 10', () => {
@@ -198,7 +198,79 @@ describe('transformer', () => {
     let result = transformer.parse(tokens, text, 'src/file.js');
 
     //then
-    expect(result).toBe('const c2 = \'test\'\nexport {c2};');
+    expect(result).toBe('const c2 = \'test\';\nexport {c2};');
+  });
+
+  it('should parse text 11', () => {
+    //given
+    let text = 'angular.module("my.module")' +
+      '.directive("myDirective", function () {' +
+      'return {' +
+      'controller: function () {},' +
+      'templateUrl: "src" + "/template.url"' +
+      '}' +
+      '})';
+    let tokens = componentResolver.resolve(text, 'src/main/file.js');
+
+    //when
+    let result = transformer.parse(tokens, text, 'src/main/file.js');
+
+    //then
+    expect(result).toBe(
+      '/*@ngInject*/\n' +
+      'function myDirective () {' +
+      'return {controller: /*ngInject*/function () {},template: require(\'../template.url\')}' +
+      '}' +
+      '\nexport {myDirective};'
+    );
+  });
+
+  it('should parse text 12', () => {
+    //given
+    let text = 'angular.module(\'common.service\').constant(\'c2\', {val: \'test\'});';
+    let tokens = componentResolver.resolve(text, 'src/file.js');
+
+    //when
+    let result = transformer.parse(tokens, text, 'src/file.js');
+
+    //then
+    expect(result).toBe('const c2 = {val: \'test\'};\nexport {c2};');
+  });
+
+  it('should parse text 13', () => {
+    //given
+    let text = '\'use strict\'\nangular.module(\'common.service\').constant(\'c2\', 2);';
+    let tokens = componentResolver.resolve(text, 'src/file.js');
+
+    //when
+    let result = transformer.parse(tokens, text, 'src/file.js');
+
+    //then
+    expect(result).toBe('const c2 = 2;\nexport {c2};');
+  });
+
+  it('should parse text 14', () => {
+    //given
+    let text = '"use strict";angular.module(\'common.service\').constant(\'c2\', \'test\' + \'Test\');';
+    let tokens = componentResolver.resolve(text, 'src/file.js');
+
+    //when
+    let result = transformer.parse(tokens, text, 'src/file.js');
+
+    //then
+    expect(result).toBe('const c2 = \'test\' + \'Test\';\nexport {c2};');
+  });
+
+  it('should remove "use strict"', () => {
+    //given
+    let text = '\'use strict\'\n;';
+    let tokens = componentResolver.resolve(text, 'src/file.js');
+
+    //when
+    let result = transformer.parse(tokens, text, 'src/file.js');
+
+    //then
+    expect(result).toBe('');
   });
 
 });

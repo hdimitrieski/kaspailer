@@ -404,4 +404,15 @@ describe('Lexer', () => {
     expect(tokens.length).toBe(26);
   });
 
+  it('should return tokens 3', () => {
+    //given
+    let text = '\'use strict\'; var a = \'use strict\';';
+
+    //when
+    let tokens = lexer.lex(text);
+
+    //then
+    expect(tokens.length).toBe(7);
+  });
+
 });
